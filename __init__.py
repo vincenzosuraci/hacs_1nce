@@ -18,7 +18,7 @@ from datetime import datetime
 import json as json_lib
 
 # Setting log
-_LOGGER = logging.getLogger('sim_credit_init')
+_LOGGER = logging.getLogger('1nce_account_log')
 _LOGGER.setLevel(logging.DEBUG)
 
 # This is needed, it impacts on the name to be called in configurations.yaml
@@ -27,9 +27,6 @@ DOMAIN = '1nce_account'
 
 REQUIREMENTS = ['beautifulsoup4']
 
-OBJECT_ID_CREDIT = 'credit'
-
-CONF_PHONE_NUMBERS = 'phone_numbers'
 CONF_SIM_ICCIDS = 'sim_iccids'
 
 # Default scan interval = 15 minutes = 900 seconds
