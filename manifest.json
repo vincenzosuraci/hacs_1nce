@@ -1,0 +1,11 @@
+{
+  "domain": "1nce_account",
+  "name": "1nce Crawler",
+  "version": "1.0.0",
+  "homeassistant": "2022.4.0",
+  "documentation": "https://github.com/vincenzosuraci/hassio_1nce_account",
+  "dependencies": [],
+  "codeowners": ["@vincenzosuraci"],
+  "requirements": [],
+  "iot_class": "cloud_polling"
+}
