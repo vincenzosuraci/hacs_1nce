@@ -302,7 +302,7 @@ class OncePlatform(OnceCrawler):
             thread.join()
 
     def debug(self, msg):
-        _LOGGER.debuf(msg)
+        _LOGGER.debug(msg)
 
     def info(self, msg):
         _LOGGER.info(msg)
