@@ -55,7 +55,7 @@ CONFIG_SCHEMA = vol.Schema({
 async def async_setup(hass, config):
 
     # create the 1nce Platform object
-    hass.data[DOMAIN] = OncePlatform(hass, config)
+    hass.data[DOMAIN] = OncePlatform(hass, config, DOMAIN)
 
     return True
 
