@@ -294,7 +294,7 @@ class OncePlatform(OnceCrawler):
         for sim_iccid in self.config[self.domain][CONF_SIM_ICCIDS]:
             thread = Thread(
                 target=self.get_sim_credit,
-                args=sim_iccid
+                args=[sim_iccid]
             )
             thread.start()
             threads.append(thread)
