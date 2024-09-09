@@ -17,13 +17,13 @@ from datetime import datetime
 
 import json as json_lib
 
-# Setting log
-_LOGGER = logging.getLogger('1nce_account_log')
-_LOGGER.setLevel(logging.DEBUG)
-
 # This is needed, it impacts on the name to be called in configurations.yaml
 # Ref: https://developers.home-assistant.io/docs/en/creating_integration_manifest.html
 DOMAIN = '1nce_account'
+
+# Setting log
+_LOGGER = logging.getLogger(DOMAIN)
+_LOGGER.setLevel(logging.DEBUG)
 
 REQUIREMENTS = ['beautifulsoup4']
 
