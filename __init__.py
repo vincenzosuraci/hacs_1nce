@@ -152,6 +152,8 @@ class OnceCrawler:
             json = json_lib.loads(json_str)
             access_token = json["access_token"]
 
+            self.debug('Access token della SIM ' + str(iccid) + ': ' + access_token)
+
             url = "https://api.1nce.com/management-api/v1/sims/" + iccid + "/quota/data"
 
             headers = {
@@ -300,7 +302,7 @@ class OncePlatform(OnceCrawler):
             thread.join()
 
     def debug(self, msg):
-        _LOGGER.error(msg)
+        _LOGGER.debuf(msg)
 
     def info(self, msg):
         _LOGGER.info(msg)
