@@ -2,15 +2,8 @@ import asyncio
 import aiohttp
 import async_timeout
 import base64
-import os
 import time
-import json as json_lib
-
-from Cryptodome.PublicKey import RSA
-from Cryptodome.Cipher import AES
-from Cryptodome.Cipher import PKCS1_v1_5
-from Cryptodome.Util.Padding import pad, unpad
-
+from datetime import datetime
 from .const import CONF_ICCID, CONF_USERNAME, CONF_PASSWORD, SENSOR_VOLUME, SENSOR_TOTAL_VOLUME, SENSOR_EXPIRY_DATE
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -70,7 +63,7 @@ class _1nce:
 
                 sim_data = None
 
-                url = "https://api.1nce.com/management-api/v1/sims/" + iccid + "/quota/data"
+                url = "https://api.1nce.com/management-api/v1/sims/" + self._iccid + "/quota/data"
 
                 headers = {
                     "accept": "application/json",
@@ -82,8 +75,7 @@ class _1nce:
                         await self._async_init_session()
                         async with self._session.get(url, headers=headers) as response:
                             if response.status == 200:
-                                json_str = response.text
-                                sim_data = json_lib.loads(json_str)
+                                sim_data = await response.json()
                                 await self._async_close_session()
                             else:
                                 if num_retries > 0:
@@ -93,27 +85,28 @@ class _1nce:
                                 else:
                                     msg = f"Request error {url}: {response.status}"
                                     code = 202
+                                    await self._async_close_session()
                                     raise _1nceError(msg, code)
                 except aiohttp.ClientError as err:
                         msg = f"Connection error {url}: {err}"
                         code = 201
+                        await self._async_close_session()
                         raise _1nceError(msg, code)
                 except asyncio.TimeoutError:
                     msg = f"Connection timeout {url}"
                     code = 200
+                    await self._async_close_session()
                     raise _1nceError(msg, code)
 
                 if sim_data is not None:
 
                     # Converti la stringa in un oggetto datetime
-                    exp_date_obj = datetime.strptime(json["expiry_date"], "%Y-%m-%d %H:%M:%S")
+                    expiry_date = datetime.strptime(sim_data["expiry_date"], "%Y-%m-%d %H:%M:%S").date()
 
-                    # Converti l'oggetto datetime nel formato desiderato
-                    exp_date = exp_date_obj.strftime("%d-%m-%Y")
                     self._sim_data = {
-                        SENSOR_VOLUME: json["volume"],
-                        SENSOR_TOTAL_VOLUME: json["total_volume"],
-                        SENSOR_EXPIRY_DATE: exp_date
+                        SENSOR_VOLUME: sim_data["volume"],
+                        SENSOR_TOTAL_VOLUME: sim_data["total_volume"],
+                        SENSOR_EXPIRY_DATE: expiry_date
                     }
                     self.debug(self._sim_data)
 
@@ -142,22 +135,24 @@ class _1nce:
             try:
                 async with async_timeout.timeout(10):  # Timeout di 10 secondi
                     await self._async_init_session()
-                    async with self._session.post(url, headers=headers) as response:
+                    async with self._session.post(url, headers=headers, json=json) as response:
                         if response.status == 200:
-                            json_str = response.text
-                            json = json_lib.loads(json_str)
-                            self._access_token = json["access_token"]
+                            json_arr = await response.json()
+                            self._access_token = json_arr["access_token"]
                         else:
                             msg = f"Request error {url}: {response.status}"
+                            await self._async_close_session()
                             code = 102
                             raise _1nceError(msg, code)
             except aiohttp.ClientError as err:
                 msg = f"Connection error {url}: {err}"
                 code = 101
+                await self._async_close_session()
                 raise _1nceError(msg, code)
             except asyncio.TimeoutError:
                 msg = f"Connection timeout {url}"
                 code = 100
+                await self._async_close_session()
                 raise _1nceError(msg, code)
 
         return self._access_token
