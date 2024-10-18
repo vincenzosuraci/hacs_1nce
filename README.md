@@ -1,19 +1,39 @@
-# Introduzione
-- Questo custom component permette di recuperare le seguenti informazioni relative alle schede SIM dell'operatore <code>1nce</code>:
-  - numero di MB (internet/dati) rimanenti; 
-  - numero di MB totali previsti dal piano;
-  - data di scadenza della SIM.
-- Viene supportato il caso di 2 o più SIM (iccid) associate allo stesso account (username e password).
-- Non è supportato il caso di 2 o più account.
 
-# Installazione
-- Creare la directory <code>custom_components</code> nella directory principale (quella che contiene il file <code>configuration.yaml</code>)
-- Nella directory <code>custom_components</code>, creare la directory <code>sim_credit</code>
-- Nella directory <code>1nce_account</code> copia i seguenti file:
-  - <code>\_\_init.py\_\_</code>
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+
+
+Monitor the 1nce sims.
+Login credentials and sims' `iccid` are required.
+
+# HACS version (suggested)
+## Installation
+- add `1nce` as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/)
+- in HACS, search for `1nce` and install the latest release
+- in Home Assistant, add the `1nce` integration, insert the `username`, `password` and the sims' `iccid` and follow the instructions  
+
+# Stand-alone version
+
+## Introduction
+This custom component allows you to retrieve the following information related to <code>1nce</code> operator SIM cards:
+
+- remaining MB (internet/data);
+- total MB provided by the plan;
+- SIM card expiration date.
+
+It supports the case of 2 or more SIM cards (ICCID) associated with the same account (username and password).
+It does not support the case of 2 or more accounts.
+
+## Installation
+
+- Create the <code>custom_components</code> directory in the main directory (the one containing the <code>configuration.yaml</code> file).
+- In the <code>custom_components</code> directory, create the <code>sim_credit</code> directory.
+- In the <code>1nce_account</code> directory, copy the following files:
+
+  - <code>__init.py__</code>
   - <code>manifest.json</code>
-- Riavviare Home Assistant
-- Dopo aver riavviato Home Assistant, nel file <code>configuration.yaml</code> aggiungere le seguenti righe (e salvare):
+  
+- Restart Home Assistant.
+- After restarting Home Assistant, add the following lines to the <code>configuration.yaml</code> file (and save):
 
 ```yaml
 1nce_account:
@@ -22,7 +42,7 @@
   password: !secret 1nce_account_password
 ```
 
-- Andare nel file <code>secrets.yaml</code> e aggiungere le seguenti righe (e salvare):
+- Go to the <code>secrets.yaml</code> file and add the following lines (and save):
 
 ```yaml
 1nce_username: "inserire-qui-la-username"  
@@ -32,15 +52,18 @@
   - "inserire-qui-il-iccid-della-sim-#2" 
 ```
 
-- Riavviare Home Assistant
-- Dovrebbero comparire le seguenti terne di entità (una terna per ogni numero di telefono):
-  - <code>1nce_account.\<iccid\>_volume</code> > MB rimasti
-  - <code>1nce_account.\<iccid\>_expiry_date</code> > Data di scadenza della SIM
-  - <code>1nce_account.\<iccid\>_total_volume</code> > MB totali della offerta
+- Restart Home Assistant.
+- The following sets of entities should appear (one set for each phone number):
 
-# Configurazione
-- Di default, viene eseguito un aggiornamento dei dati ogni 15 minuti
-- Si può personalizzare il periodo di aggiornamento dei dati, configurando il parametro <code>scan_interval</code> espresso in secondi:
+  - <code>1nce_account.<iccid>_volume</code> > Remaining MB
+  - <code>1nce_account.<iccid>_expiry_date</code> > SIM expiration date
+  - <code>1nce_account.<iccid>_total_volume</code> > Total MB of the plan
+
+## Configuration
+
+- By default, data is updated every 15 minutes.
+- You can customize the data update interval by configuring the <code>scan_interval</code> parameter (in seconds):
+
 ```yaml
 1nce_account:
   sim_iccids: !secret 1nce_account_sim_iccids
