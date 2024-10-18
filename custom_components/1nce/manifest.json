@@ -1,0 +1,18 @@
+{
+  "domain": "1nce",
+  "name": "1nce Sim",
+  "version": "1.0.0",
+  "homeassistant": "2024.8.0",
+  "documentation": "https://github.com/vincenzosuraci/hacs_1nce",
+  "dependencies": [],
+  "codeowners": [
+    "@vincenzosuraci"
+  ],
+  "integration_type": "device",
+  "issue_tracker": "https://github.com/vincenzosuraci/hacs_1nce/issues",
+  "requirements": [
+    "aiohttp"
+  ],
+  "iot_class": "cloud_polling",
+  "config_flow": true
+}
