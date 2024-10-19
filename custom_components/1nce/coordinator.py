@@ -12,7 +12,14 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 
-from .zyxel import ZyxelError, ZyxelAuthError
+import importlib
+
+# Importa il modulo 1nce.py da 1nce_account
+module_1nce = importlib.import_module("_1nce")
+
+# Ottieni la classe _1nceCrawler dal modulo importato
+_1nceAuthError = getattr(module_1nce, '_1nceAuthError')
+_1nceError = getattr(module_1nce, '_1nceError')
 
 from .const import DOMAIN, UPDATE_INTERVAL_S
 

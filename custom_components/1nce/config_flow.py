@@ -5,7 +5,6 @@ from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_ICCID, CONF_USERNAME, CONF_PASSWORD
 from ._1nce_device import _1nceDevice
 
-
 class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Gestisce il flusso di configurazione per il modem ZyXEL."""
 
