@@ -33,11 +33,7 @@ if __name__ == "__main__":
 
     else:
 
-        # Importa il modulo 1nce.py da 1nce_account
-        module_1nce = importlib.import_module("custom_components.1nce._1nce")
-
-        # Ottieni la classe _1nceCrawler dal modulo importato
-        _1nce = getattr(module_1nce, '_1nce')
+        from custom_components.one_nce.one_nce import _1nce
 
         _1nce_crawler = _1nce(params={
             'iccid': iccid,

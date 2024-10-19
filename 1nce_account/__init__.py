@@ -11,13 +11,7 @@ try:
 
     import voluptuous as vol
 
-    import importlib
-
-    # Importa il modulo 1nce.py da 1nce_account
-    module_1nce = importlib.import_module("1nce")
-
-    # Ottieni la classe _1nceCrawler dal modulo importato
-    _1nceCrawler = getattr(module_1nce, '_1nceCrawler')
+    from .one_nce import _1nceCrawler
 
     # This is needed, it impacts on the name to be called in configurations.yaml
     # Ref: https://developers.home-assistant.io/docs/en/creating_integration_manifest.html

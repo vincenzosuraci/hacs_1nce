@@ -57,6 +57,8 @@ async def get_sensors(coordinator: _1nceCoordinator, device_info: DeviceInfo):
 
     if data is not None:
 
+        _LOGGER.debug(data)
+
         if SENSOR_VOLUME in data:
             sensors.append(_1nceSensor(coordinator, device_info, SensorEntityDescription(
                 key=str(SENSOR_VOLUME).lower().replace(" ", "_"),
@@ -110,8 +112,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         identifiers={(DOMAIN, device_id)},
         name=device_name,
         manufacturer=device_name,
-        model=device_model,  # Modello del modem (aggiorna con il modello corretto)
-        sw_version=device_sw_version,  # Versione del software, può essere dinamico se riesci a recuperarlo dal modem
         via_device=(DOMAIN, config_entry.entry_id),
     )
 
