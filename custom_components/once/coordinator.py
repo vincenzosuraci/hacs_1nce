@@ -21,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class OnceCoordinator(DataUpdateCoordinator):
 
-    def __init__(self, hass, OnceDeviceObj):
+    def __init__(self, hass, device):
         super().__init__(
             hass,
             _LOGGER,
@@ -34,10 +34,11 @@ class OnceCoordinator(DataUpdateCoordinator):
             # being dispatched to listeners
             always_update=True
         )
-        self._OnceDeviceObj = OnceDeviceObj
+        self._device = device
 
-    def get_1nce_device(self):
-        return self._OnceDeviceObj
+    @property
+    def device(self):
+        return self._device
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -52,7 +53,7 @@ class OnceCoordinator(DataUpdateCoordinator):
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
-                return await self.get_1nce_device.fetch_data()
+                return await self.device.fetch_data()
         except OnceAuthError as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)

@@ -52,7 +52,6 @@ class Once:
     async def fetch_data(self):
         return await self._get_sim_data()
 
-
     async def _get_sim_data(self, num_retries=MAX_NUM_RETRIES):
 
         if self._last_update_timestamp is None or time.time() > self._last_update_timestamp + self.MIN_INTERVAL_S:
