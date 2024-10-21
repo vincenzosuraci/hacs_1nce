@@ -26,13 +26,7 @@ It does not support the case of 2 or more accounts.
 
 ## Installation
 
-- Create the <code>custom_components</code> directory in the main directory (the one containing the <code>configuration.yaml</code> file).
-- In the <code>custom_components</code> directory, create the <code>sim_credit</code> directory.
-- In the <code>1nce_account</code> directory, copy the following files:
-
-  - <code>__init.py__</code>
-  - <code>manifest.json</code>
-  
+- Copy the `1nce_account` folder into your [custom_components folder](https://developers.home-assistant.io/docs/en/creating_component_loading.html).
 - Restart Home Assistant.
 - After restarting Home Assistant, add the following lines to the <code>configuration.yaml</code> file (and save):
 
