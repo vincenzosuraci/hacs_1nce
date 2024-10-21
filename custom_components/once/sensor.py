@@ -22,7 +22,7 @@ class OnceSensor(CoordinatorEntity, SensorEntity):
         self._attr_state_class = description.state_class
         self._attr_suggested_display_precision = description.suggested_display_precision
         self._attr_name = description.name
-        self._attr_unique_id = f"{device_info["name"]}_{description.key}"
+        self._attr_unique_id = description.key
         self._attr_icon = description.icon
         self._attr_unit_of_measurement = description.unit_of_measurement
         self._attr_device_info = device_info
@@ -57,9 +57,11 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
 
     if data is not None:
 
+        device_id = await coordinator.device.get_id()
+
         if SENSOR_VOLUME in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=str(SENSOR_VOLUME).lower().replace(" ", "_"),
+                key=device_id + "_" + str(SENSOR_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_VOLUME,
                 icon="mdi:web",
                 unit_of_measurement=UnitOfInformation.MEGABYTES,
@@ -69,7 +71,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
             )))
         if SENSOR_TOTAL_VOLUME in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
+                key=device_id + "_" + str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_TOTAL_VOLUME,
                 icon="mdi:web",
                 unit_of_measurement=UnitOfInformation.MEGABYTES,
@@ -79,7 +81,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
             )))
         if SENSOR_EXPIRY_DATE in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=str(SENSOR_EXPIRY_DATE).lower().replace(" ", "_"),
+                key=device_id + "_" + str(SENSOR_EXPIRY_DATE).lower().replace(" ", "_"),
                 name=SENSOR_EXPIRY_DATE,
                 icon="mdi:calendar-clock",
                 device_class=SensorDeviceClass.DATE,

@@ -168,14 +168,12 @@ class Once:
         """ Init session """
         if self._session is None:
             self._session = aiohttp.ClientSession()
-            self.debug("Session started")
 
     async def _async_close_session(self):
         """ Close session """
         if self._session:
             await self._session.close()
             self._session = None
-            self.debug("Session closed")
 
 
 class OnceAuthError(Exception):
