@@ -17,8 +17,6 @@ class OnceSensor(CoordinatorEntity, SensorEntity):
         """Inizializza il sensore."""
         super().__init__(coordinator)
 
-        _LOGGER.debug(f"Once Sensor {description}")
-
         self._description = description
         self._attr_device_class = description.device_class
         self._attr_state_class = description.state_class
@@ -55,11 +53,9 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
 
     sensors = []
 
-    data = await coordinator.getOnce.fetch_data()
+    data = await coordinator.device.fetch_data()
 
     if data is not None:
-
-        _LOGGER.debug(data)
 
         if SENSOR_VOLUME in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
@@ -94,7 +90,6 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    _LOGGER.debug("async_setup_entry called!")
 
     """Configura i sensori da una config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]

@@ -47,8 +47,6 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
 
                         title = await device.get_title()
 
-                        _LOGGER.debug(f"connection test successful, title: {title}, data: {data}")
-
                         return self.async_create_entry(
                             title=title,
                             data=data
