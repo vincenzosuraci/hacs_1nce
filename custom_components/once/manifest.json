@@ -10,9 +10,7 @@
   ],
   "integration_type": "device",
   "issue_tracker": "https://github.com/vincenzosuraci/hacs_1nce/issues",
-  "requirements": [
-    "aiohttp"
-  ],
+  "requirements": [],
   "iot_class": "cloud_polling",
   "config_flow": true
 }
