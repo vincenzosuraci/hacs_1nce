@@ -33,18 +33,18 @@ if __name__ == "__main__":
 
     else:
 
-        from custom_components.one_nce.one_nce import _1nce
+        from custom_components.once.once import Once
 
-        _1nce_crawler = _1nce(params={
+        OnceObj = Once(params={
             'iccid': iccid,
             'username': username,
             'password': password
         })
         import asyncio
-        asyncio.run(_1nce_crawler.fetch_data())
+        asyncio.run(OnceObj.fetch_data())
         import time
         time.sleep(5)
-        asyncio.run(_1nce_crawler.fetch_data())
+        asyncio.run(OnceObj.fetch_data())
 
 
 

@@ -1,4 +1,4 @@
-from ._1nce import _1nce
+from .once import Once
 
 from .const import *
 
@@ -6,7 +6,7 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 
 
-class _1nceDevice(_1nce):
+class OnceDevice(Once):
 
     def debug(self, msg):
         _LOGGER.debug(msg)

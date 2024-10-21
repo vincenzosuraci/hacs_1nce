@@ -3,9 +3,9 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_ICCID, CONF_USERNAME, CONF_PASSWORD
-from ._1nce_device import _1nceDevice
+from .once_device import OnceDevice
 
-class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class Once_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Gestisce il flusso di configurazione per il modem ZyXEL."""
 
     VERSION = 1
@@ -24,7 +24,7 @@ class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if iccid and username and password:
 
-                _1nce = _1nceDevice(params={
+                OnceDeviceObj = OnceDevice(params={
                     "username": username,
                     "password": password,
                     "iccid": iccid
@@ -32,7 +32,7 @@ class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 try:
 
-                    if await _1nce.test_connection():
+                    if await OnceDeviceObj.test_connection():
 
                         data = {
                             CONF_ICCID: iccid,
@@ -40,7 +40,7 @@ class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             CONF_PASSWORD: password
                         }
 
-                        title = await _1nce.get_title()
+                        title = await OnceDeviceObj.get_title()
 
                         return self.async_create_entry(
                             title=title,
@@ -70,9 +70,9 @@ class _1nce_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return _1nce_OptionsFlow(config_entry)
+        return Once_OptionsFlow(config_entry)
 
-class _1nce_OptionsFlow(config_entries.OptionsFlow):
+class Once_OptionsFlow(config_entries.OptionsFlow):
     """Gestione delle opzioni aggiuntive per ZyXEL Modem."""
 
     def __init__(self, config_entry):

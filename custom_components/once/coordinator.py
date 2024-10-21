@@ -12,16 +12,16 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 
-from one_nce import _1nceError, _1nceAuthError
+from once import OnceError, OnceAuthError
 
 from .const import DOMAIN, UPDATE_INTERVAL_S
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class _1nceCoordinator(DataUpdateCoordinator):
+class OnceCoordinator(DataUpdateCoordinator):
 
-    def __init__(self, hass, _1nce):
+    def __init__(self, hass, OnceDeviceObj):
         super().__init__(
             hass,
             _LOGGER,
@@ -34,11 +34,10 @@ class _1nceCoordinator(DataUpdateCoordinator):
             # being dispatched to listeners
             always_update=True
         )
-        self._1nce = _1nce
+        self._OnceDeviceObj = OnceDeviceObj
 
-    @property
-    def get_1nce(self):
-        return self._1nce
+    def get_1nce_device(self):
+        return self._OnceDeviceObj
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -53,11 +52,11 @@ class _1nceCoordinator(DataUpdateCoordinator):
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
-                return await self._1nce.fetch_data()
-        except _1nceAuthError as err:
+                return await self.get_1nce_device.fetch_data()
+        except OnceAuthError as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
-        except _1nceError as err:
+        except OnceError as err:
             raise UpdateFailed(f"{err}")
 

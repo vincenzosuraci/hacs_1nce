@@ -6,14 +6,14 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import SensorDeviceClass
 from .const import *
-from .coordinator import _1nceCoordinator
+from .coordinator import OnceCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class _1nceSensor(CoordinatorEntity, SensorEntity):
+class OnceSensor(CoordinatorEntity, SensorEntity):
 
-    def __init__(self, coordinator: _1nceCoordinator, device_info: DeviceInfo, description: SensorEntityDescription):
+    def __init__(self, coordinator: OnceCoordinator, device_info: DeviceInfo, description: SensorEntityDescription):
         """Inizializza il sensore."""
         super().__init__(coordinator)
 
@@ -49,18 +49,18 @@ class _1nceSensor(CoordinatorEntity, SensorEntity):
         )
 
 
-async def get_sensors(coordinator: _1nceCoordinator, device_info: DeviceInfo):
+async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
 
     sensors = []
 
-    data = await coordinator.get_1nce.fetch_data()
+    data = await coordinator.getOnce.fetch_data()
 
     if data is not None:
 
         _LOGGER.debug(data)
 
         if SENSOR_VOLUME in data:
-            sensors.append(_1nceSensor(coordinator, device_info, SensorEntityDescription(
+            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=str(SENSOR_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_VOLUME,
                 icon="mdi:web",
@@ -70,7 +70,7 @@ async def get_sensors(coordinator: _1nceCoordinator, device_info: DeviceInfo):
                 state_class=SensorStateClass.MEASUREMENT
             )))
         if SENSOR_TOTAL_VOLUME in data:
-            sensors.append(_1nceSensor(coordinator, device_info, SensorEntityDescription(
+            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_TOTAL_VOLUME,
                 icon="mdi:web",
@@ -80,7 +80,7 @@ async def get_sensors(coordinator: _1nceCoordinator, device_info: DeviceInfo):
                 state_class=SensorStateClass.MEASUREMENT
             )))
         if SENSOR_EXPIRY_DATE in data:
-            sensors.append(_1nceSensor(coordinator, device_info, SensorEntityDescription(
+            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=str(SENSOR_EXPIRY_DATE).lower().replace(" ", "_"),
                 name=SENSOR_EXPIRY_DATE,
                 icon="mdi:calendar-clock",
@@ -94,11 +94,11 @@ async def get_sensors(coordinator: _1nceCoordinator, device_info: DeviceInfo):
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Configura i sensori da una config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
-    _1nce = coordinator.get_1nce
+    OnceDeviceObj = coordinator.get_1nce_device
 
     device_manufacturer = DEVICE_MANUFACTURER
-    device_name = await _1nce.get_name()
-    device_id = await _1nce.get_id()
+    device_name = await OnceDeviceObj.get_name()
+    device_id = await OnceDeviceObj.get_id()
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(

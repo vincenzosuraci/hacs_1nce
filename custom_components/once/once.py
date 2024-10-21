@@ -12,7 +12,7 @@ from .const import CONF_ICCID, CONF_USERNAME, CONF_PASSWORD, SENSOR_VOLUME, SENS
 #
 # ----------------------------------------------------------------------------------------------------------------------
 
-class _1nce:
+class Once:
 
     # Massimo numero di prove di login
     MAX_NUM_RETRIES = 1
@@ -24,9 +24,9 @@ class _1nce:
         self,
         params = {}
     ):
-        self._iccid = params.get(CONF_ICCID, None)
-        self._username = params.get(CONF_USERNAME, None)
-        self._password = params.get(CONF_PASSWORD, None)
+        self._iccid = params.get(CONF_ICCID)
+        self._username = params.get(CONF_USERNAME)
+        self._password = params.get(CONF_PASSWORD)
 
         self._session = None
         self._sim_data = None
@@ -86,17 +86,17 @@ class _1nce:
                                     msg = f"Request error {url}: {response.status}"
                                     code = 202
                                     await self._async_close_session()
-                                    raise _1nceError(msg, code)
+                                    raise OnceError(msg, code)
                 except aiohttp.ClientError as err:
                         msg = f"Connection error {url}: {err}"
                         code = 201
                         await self._async_close_session()
-                        raise _1nceError(msg, code)
+                        raise OnceError(msg, code)
                 except asyncio.TimeoutError:
                     msg = f"Connection timeout {url}"
                     code = 200
                     await self._async_close_session()
-                    raise _1nceError(msg, code)
+                    raise OnceError(msg, code)
 
                 if sim_data is not None:
 
@@ -143,17 +143,17 @@ class _1nce:
                             msg = f"Request error {url}: {response.status}"
                             await self._async_close_session()
                             code = 102
-                            raise _1nceError(msg, code)
+                            raise OnceError(msg, code)
             except aiohttp.ClientError as err:
                 msg = f"Connection error {url}: {err}"
                 code = 101
                 await self._async_close_session()
-                raise _1nceError(msg, code)
+                raise OnceError(msg, code)
             except asyncio.TimeoutError:
                 msg = f"Connection timeout {url}"
                 code = 100
                 await self._async_close_session()
-                raise _1nceError(msg, code)
+                raise OnceError(msg, code)
 
         return self._access_token
 
@@ -179,7 +179,7 @@ class _1nce:
             self.debug("Session closed")
 
 
-class _1nceAuthError(Exception):
+class OnceAuthError(Exception):
     """Eccezione personalizzata che accetta un messaggio e un codice di errore."""
 
     def __init__(self, message, code):
@@ -192,7 +192,7 @@ class _1nceAuthError(Exception):
         return f"[1nce Authentication Error {self.code}]: {self.args[0]}"
 
 
-class _1nceError(Exception):
+class OnceError(Exception):
     """Eccezione personalizzata che accetta un messaggio e un codice di errore."""
 
     def __init__(self, message, code):

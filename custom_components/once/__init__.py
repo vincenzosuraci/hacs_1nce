@@ -14,8 +14,8 @@ try:
     from homeassistant.config_entries import ConfigEntry
     from .sensor import async_setup_entry as async_setup_sensors
 
-    from ._1nce_device import _1nceDevice
-    from .coordinator import _1nceCoordinator
+    from .once_device import OnceDevice
+    from .coordinator import OnceCoordinator
 
     async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
 
@@ -23,14 +23,14 @@ try:
         username = config_entry.data[CONF_USERNAME]
         password = config_entry.data[CONF_PASSWORD]
 
-        _1nce = _1nceDevice(params={
+        OnceDeviceObj = OnceDevice(params={
             "username": username,
             "password": password,
             "iccid": iccid
         })
 
         # Inizializza il coordinatore
-        coordinator = _1nceCoordinator(hass, _1nce)
+        coordinator = OnceCoordinator(hass, OnceDeviceObj)
 
         # Memorizza il coordinatore nel registro dei dati di Home Assistant
         hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = coordinator
