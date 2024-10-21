@@ -28,4 +28,4 @@ class OnceDevice(Once):
         return f"{DEVICE_MANUFACTURER} {self.iccid}"
 
     async def get_title(self):
-        return f"{DEVICE_MANUFACTURER} - {self.iccid}"
+        return await self.get_name()

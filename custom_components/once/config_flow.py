@@ -29,7 +29,7 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
 
             if iccid and username and password:
 
-                OnceDeviceObj = OnceDevice(params={
+                once_device = OnceDevice(params={
                     "username": username,
                     "password": password,
                     "iccid": iccid
@@ -37,7 +37,7 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
 
                 try:
 
-                    if await OnceDeviceObj.test_connection():
+                    if await once_device.test_connection():
 
                         data = {
                             CONF_ICCID: iccid,
@@ -45,7 +45,7 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
                             CONF_PASSWORD: password
                         }
 
-                        title = await OnceDeviceObj.get_title()
+                        title = await once_device.get_title()
 
                         _LOGGER.debug(f"connection test successful, title: {title}, data: {data}")
 
