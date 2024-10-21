@@ -17,6 +17,8 @@ class OnceSensor(CoordinatorEntity, SensorEntity):
         """Inizializza il sensore."""
         super().__init__(coordinator)
 
+        _LOGGER.debug(f"Once Sensor {description}")
+
         self._description = description
         self._attr_device_class = description.device_class
         self._attr_state_class = description.state_class
@@ -92,6 +94,8 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
+    _LOGGER.debug("async_setup_entry called!")
+
     """Configura i sensori da una config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     OnceDeviceObj = coordinator.get_1nce_device

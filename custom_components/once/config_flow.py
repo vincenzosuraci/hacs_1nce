@@ -1,15 +1,15 @@
 import voluptuous as vol
-from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlow, OptionsFlow, CONN_CLASS_CLOUD_POLL
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_ICCID, CONF_USERNAME, CONF_PASSWORD
 from .once_device import OnceDevice
 
-class Once_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Gestisce il flusso di configurazione per il modem ZyXEL."""
+class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
+    """Gestisce il flusso di configurazione per la SIM 1nce"""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
+    CONNECTION_CLASS = CONN_CLASS_CLOUD_POLL
 
     async def async_step_user(self, user_input=None):
         """Primo passo: richiedi username, password dell'account e iccid della SIM"""
@@ -64,15 +64,17 @@ class Once_ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         })
 
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors
+            step_id="user",
+            data_schema=data_schema,
+            errors=errors
         )
 
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return Once_OptionsFlow(config_entry)
+        return OnceOptionsFlow(config_entry)
 
-class Once_OptionsFlow(config_entries.OptionsFlow):
+class OnceOptionsFlow(OptionsFlow):
     """Gestione delle opzioni aggiuntive per ZyXEL Modem."""
 
     def __init__(self, config_entry):
