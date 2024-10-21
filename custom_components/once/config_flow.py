@@ -5,6 +5,9 @@ from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_ICCID, CONF_USERNAME, CONF_PASSWORD
 from .once_device import OnceDevice
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
     """Gestisce il flusso di configurazione per la SIM 1nce"""
 
