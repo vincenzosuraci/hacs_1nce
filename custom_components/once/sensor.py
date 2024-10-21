@@ -62,7 +62,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
         if SENSOR_VOLUME in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=device_id + "_" + str(SENSOR_VOLUME).lower().replace(" ", "_"),
-                name=SENSOR_VOLUME,
+                name=device_id + "_" + SENSOR_VOLUME,
                 icon="mdi:web",
                 unit_of_measurement=UnitOfInformation.MEGABYTES,
                 suggested_display_precision=6,
@@ -72,7 +72,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
         if SENSOR_TOTAL_VOLUME in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=device_id + "_" + str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
-                name=SENSOR_TOTAL_VOLUME,
+                name=device_id + "_" + SENSOR_TOTAL_VOLUME,
                 icon="mdi:web",
                 unit_of_measurement=UnitOfInformation.MEGABYTES,
                 suggested_display_precision=0,
@@ -82,7 +82,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
         if SENSOR_EXPIRY_DATE in data:
             sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
                 key=device_id + "_" + str(SENSOR_EXPIRY_DATE).lower().replace(" ", "_"),
-                name=SENSOR_EXPIRY_DATE,
+                name=device_id + "_" + SENSOR_EXPIRY_DATE,
                 icon="mdi:calendar-clock",
                 device_class=SensorDeviceClass.DATE,
                 state_class=SensorStateClass.MEASUREMENT
