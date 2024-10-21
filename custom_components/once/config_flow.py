@@ -15,6 +15,8 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
         """Primo passo: richiedi username, password dell'account e iccid della SIM"""
         errors = {}
 
+        _LOGGER.debug(f"async_step_user called, user_input: {user_input}")
+
         if user_input is not None:
 
             # Verifica se l'input è valido (opzionale: potresti fare un controllo sulla connessione qui)
@@ -41,6 +43,8 @@ class OnceConfigFlow(ConfigFlow, domain=DOMAIN):
                         }
 
                         title = await OnceDeviceObj.get_title()
+
+                        _LOGGER.debug(f"connection test successful, title: {title}, data: {data}")
 
                         return self.async_create_entry(
                             title=title,
