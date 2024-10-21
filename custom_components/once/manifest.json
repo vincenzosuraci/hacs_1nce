@@ -1,6 +1,6 @@
 {
-  "domain": "1nce",
-  "name": "1nce SIM",
+  "domain": "once",
+  "name": "1nce",
   "version": "1.0.0",
   "homeassistant": "2024.8.0",
   "documentation": "https://github.com/vincenzosuraci/hacs_1nce",

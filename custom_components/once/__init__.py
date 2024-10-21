@@ -19,6 +19,8 @@ try:
 
     async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
 
+        _LOGGER()
+
         iccid = config_entry.data[CONF_ICCID]
         username = config_entry.data[CONF_USERNAME]
         password = config_entry.data[CONF_PASSWORD]
