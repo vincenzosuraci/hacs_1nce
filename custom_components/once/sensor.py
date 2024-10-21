@@ -98,11 +98,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     """Configura i sensori da una config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
-    once_device = coordinator.get_1nce_device
+    device = coordinator.get_1nce_device
 
     device_manufacturer = DEVICE_MANUFACTURER
-    device_name = await once_device.get_name()
-    device_id = await once_device.get_id()
+    device_name = await device.get_name()
+    device_id = await device.get_id()
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(

@@ -25,14 +25,14 @@ try:
         username = config_entry.data[CONF_USERNAME]
         password = config_entry.data[CONF_PASSWORD]
 
-        once_device = OnceDevice(params={
+        device = OnceDevice(params={
             "username": username,
             "password": password,
             "iccid": iccid
         })
 
         # Inizializza il coordinatore
-        coordinator = OnceCoordinator(hass, once_device)
+        coordinator = OnceCoordinator(hass, device)
 
         # Memorizza il coordinatore nel registro dei dati di Home Assistant
         hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = coordinator
