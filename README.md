@@ -7,9 +7,10 @@ Login credentials and sims' `iccid` are required.
 
 # HACS version (suggested)
 ## Installation
-- add `1nce` as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/)
-- in HACS, search for `1nce` and install the latest release
-- in Home Assistant, add the `1nce` integration, insert the `username`, `password` and the sims' `iccid` and follow the instructions  
+- add `1NCE` as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/)
+- in HACS, search for `1NCE` and install the latest release
+- in Home Assistant, add the `1NCE` integration, insert the `username`, `password` and the sim's `iccid` and follow the instructions  
+- repeat the above steps to add more sims
 
 # Stand-alone version
 
