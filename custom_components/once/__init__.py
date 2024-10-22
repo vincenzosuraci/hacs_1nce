@@ -12,8 +12,8 @@ from .const import (
 try:
     from homeassistant.core import HomeAssistant
     from homeassistant.config_entries import ConfigEntry
-    from .sensor import async_setup_entry as async_setup_sensors
 
+    from .sensor import async_setup_entry as async_setup_sensors
     from .once_device import OnceDevice
     from .coordinator import OnceCoordinator
 
