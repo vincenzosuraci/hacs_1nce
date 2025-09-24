@@ -64,7 +64,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
                 key=device_id + "_" + str(SENSOR_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_VOLUME,
                 icon="mdi:web",
-                unit_of_measurement=UnitOfInformation.MEGABYTES,
+                native_unit_of_measurement=UnitOfInformation.MEGABYTES,
                 suggested_display_precision=6,
                 device_class=SensorDeviceClass.DATA_SIZE,
                 state_class=SensorStateClass.MEASUREMENT
@@ -74,7 +74,7 @@ async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
                 key=device_id + "_" + str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
                 name=SENSOR_TOTAL_VOLUME,
                 icon="mdi:web",
-                unit_of_measurement=UnitOfInformation.MEGABYTES,
+                native_unit_of_measurement=UnitOfInformation.MEGABYTES,
                 suggested_display_precision=0,
                 device_class=SensorDeviceClass.DATA_SIZE,
                 state_class=SensorStateClass.MEASUREMENT
