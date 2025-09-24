@@ -101,9 +101,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = await coordinator.device.get_id()
 
     device_registry = dr.async_get(hass)
+
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, device_id)},  # Usa un identificativo unico per il router
+        identifiers={(DOMAIN, device_id)},
         manufacturer=device_manufacturer,
         name=device_name,
     )
@@ -111,8 +112,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     device_info = DeviceInfo(
         identifiers={(DOMAIN, device_id)},
         name=device_name,
-        manufacturer=device_name,
-        via_device=(DOMAIN, config_entry.entry_id),
+        manufacturer=device_name
     )
 
     sensors = await get_sensors(coordinator, device_info)
