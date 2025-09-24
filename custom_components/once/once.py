@@ -98,13 +98,13 @@ class Once:
                     raise OnceError(msg, code)
 
                 if sim_data is not None:
-
-                    # Converti la stringa in un oggetto datetime
-                    expiry_date = datetime.strptime(sim_data["expiry_date"], "%Y-%m-%d %H:%M:%S").date()
-
+                    expiry_date = sim_data.get("expiry_date", None)
+                    if expiry_date is not None:
+                        # Converti la stringa in un oggetto datetime
+                        expiry_date = datetime.strptime(expiry_date, "%Y-%m-%d %H:%M:%S").date()
                     self._sim_data = {
-                        SENSOR_VOLUME: sim_data["volume"],
-                        SENSOR_TOTAL_VOLUME: sim_data["total_volume"],
+                        SENSOR_VOLUME: sim_data.get("volume", None),
+                        SENSOR_TOTAL_VOLUME: sim_data.get("total_volume", None),
                         SENSOR_EXPIRY_DATE: expiry_date
                     }
                     self.debug(self._sim_data)
