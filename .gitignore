@@ -3,3 +3,6 @@
 
 # Escludi il file .env
 .env
+# Escludi la cache di Python
+__pycache__/
+*.pyc

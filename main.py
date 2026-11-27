@@ -21,8 +21,8 @@ if __name__ == "__main__":
 
     if stand_alone:
 
-        # Importa il modulo 1nce.py da 1nce_account
-        module_1nce = importlib.import_module("1nce_account.1nce")
+        # Importa il modulo one_nce.py da 1nce_account
+        module_1nce = importlib.import_module("1nce_account.one_nce")
 
         # Ottieni la classe _1nceCrawler dal modulo importato
         _1nceCrawler = getattr(module_1nce, '_1nceCrawler')
@@ -41,10 +41,10 @@ if __name__ == "__main__":
             'password': password
         })
         import asyncio
-        asyncio.run(OnceObj.fetch_data())
+        print(asyncio.run(OnceObj.fetch_data()))
         import time
         time.sleep(5)
-        asyncio.run(OnceObj.fetch_data())
+        print(asyncio.run(OnceObj.fetch_data()))
 
 
 

@@ -1,121 +1,107 @@
 import logging
-from homeassistant.components.sensor import SensorEntityDescription, SensorStateClass, SensorEntity
+from dataclasses import dataclass
+
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+    SensorStateClass,
+)
 from homeassistant.const import UnitOfInformation
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.sensor import SensorDeviceClass
-from .const import *
+
+from .const import DOMAIN, DEVICE_MANUFACTURER, SENSOR_VOLUME, SENSOR_TOTAL_VOLUME, SENSOR_EXPIRY_DATE
 from .coordinator import OnceCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class OnceSensor(CoordinatorEntity, SensorEntity):
+@dataclass(frozen=True, kw_only=True)
+class OnceSensorEntityDescription(SensorEntityDescription):
+    """Descrizione di un sensore 1NCE.
 
-    def __init__(self, coordinator: OnceCoordinator, device_info: DeviceInfo, description: SensorEntityDescription):
+    - key: suffisso dello unique_id (non modificarlo: cambierebbe lo unique_id delle entità esistenti)
+    - data_key: chiave del dict restituito da Once.fetch_data()
+    - translation_key: nome dell'entità in translations/*.json
+    """
+
+    data_key: str
+
+
+SENSOR_DESCRIPTIONS = (
+    OnceSensorEntityDescription(
+        key="volume",
+        data_key=SENSOR_VOLUME,
+        translation_key="volume",
+        icon="mdi:web",
+        native_unit_of_measurement=UnitOfInformation.MEGABYTES,
+        suggested_display_precision=6,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    OnceSensorEntityDescription(
+        key="total_volume",
+        data_key=SENSOR_TOTAL_VOLUME,
+        translation_key="total_volume",
+        icon="mdi:web",
+        native_unit_of_measurement=UnitOfInformation.MEGABYTES,
+        suggested_display_precision=0,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    OnceSensorEntityDescription(
+        key="expiry_date",
+        data_key=SENSOR_EXPIRY_DATE,
+        translation_key="expiry_date",
+        icon="mdi:calendar-clock",
+        # I sensori di tipo DATE non possono avere state_class né unità di misura
+        device_class=SensorDeviceClass.DATE,
+    ),
+)
+
+
+class OnceSensor(CoordinatorEntity[OnceCoordinator], SensorEntity):
+
+    _attr_has_entity_name = True
+
+    entity_description: OnceSensorEntityDescription
+
+    def __init__(
+        self,
+        coordinator: OnceCoordinator,
+        device_id: str,
+        device_info: DeviceInfo,
+        description: OnceSensorEntityDescription
+    ):
         """Inizializza il sensore."""
         super().__init__(coordinator)
 
-        self._description = description
-        self._attr_device_class = description.device_class
-        self._attr_state_class = description.state_class
-        self._attr_suggested_display_precision = description.suggested_display_precision
-        self._attr_name = description.name
-        self._attr_unique_id = description.key
-        self._attr_icon = description.icon
-        self._attr_unit_of_measurement = description.unit_of_measurement
+        self.entity_description = description
+        self._attr_unique_id = f"{device_id}_{description.key}"
         self._attr_device_info = device_info
-        self._attr_icon = description.icon
 
     @property
-    def state(self):
-        """Ritorna lo stato attuale del sensore."""
-        return self.coordinator.data.get(self._description.name)
-
-    @property
-    def available(self):
-        """Controlla se il sensore è disponibile."""
-        return self.coordinator.last_update_success
-
-    async def async_update(self):
-        """Aggiorna manualmente lo stato del sensore."""
-        await self.coordinator.async_request_refresh()
-
-    async def async_added_to_hass(self):
-        """Iscrive il sensore al coordinatore per gli aggiornamenti."""
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
-
-async def get_sensors(coordinator: OnceCoordinator, device_info: DeviceInfo):
-
-    sensors = []
-
-    data = await coordinator.device.fetch_data()
-
-    if data is not None:
-
-        device_id = await coordinator.device.get_id()
-
-        if SENSOR_VOLUME in data:
-            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=device_id + "_" + str(SENSOR_VOLUME).lower().replace(" ", "_"),
-                name=SENSOR_VOLUME,
-                icon="mdi:web",
-                native_unit_of_measurement=UnitOfInformation.MEGABYTES,
-                suggested_display_precision=6,
-                device_class=SensorDeviceClass.DATA_SIZE,
-                state_class=SensorStateClass.MEASUREMENT
-            )))
-        if SENSOR_TOTAL_VOLUME in data:
-            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=device_id + "_" + str(SENSOR_TOTAL_VOLUME).lower().replace(" ", "_"),
-                name=SENSOR_TOTAL_VOLUME,
-                icon="mdi:web",
-                native_unit_of_measurement=UnitOfInformation.MEGABYTES,
-                suggested_display_precision=0,
-                device_class=SensorDeviceClass.DATA_SIZE,
-                state_class=SensorStateClass.MEASUREMENT
-            )))
-        if SENSOR_EXPIRY_DATE in data:
-            sensors.append(OnceSensor(coordinator, device_info, SensorEntityDescription(
-                key=device_id + "_" + str(SENSOR_EXPIRY_DATE).lower().replace(" ", "_"),
-                name=SENSOR_EXPIRY_DATE,
-                icon="mdi:calendar-clock",
-                device_class=SensorDeviceClass.DATE,
-                state_class=SensorStateClass.MEASUREMENT
-            )))
-
-    return sensors
+    def native_value(self):
+        """Ritorna il valore attuale del sensore."""
+        data = self.coordinator.data or {}
+        return data.get(self.entity_description.data_key)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-
     """Configura i sensori da una config entry."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator: OnceCoordinator = hass.data[DOMAIN][config_entry.entry_id]
 
-    device_manufacturer = DEVICE_MANUFACTURER
     device_name = await coordinator.device.get_name()
     device_id = await coordinator.device.get_id()
-
-    device_registry = dr.async_get(hass)
-
-    device_registry.async_get_or_create(
-        config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, device_id)},
-        manufacturer=device_manufacturer,
-        name=device_name,
-    )
 
     device_info = DeviceInfo(
         identifiers={(DOMAIN, device_id)},
         name=device_name,
-        manufacturer=device_name
+        manufacturer=DEVICE_MANUFACTURER
     )
 
-    sensors = await get_sensors(coordinator, device_info)
-
-    async_add_entities(sensors)
-
+    async_add_entities(
+        OnceSensor(coordinator, device_id, device_info, description)
+        for description in SENSOR_DESCRIPTIONS
+    )

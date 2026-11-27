@@ -148,10 +148,21 @@ class _1nceCrawler:
                 }
 
                 # Converti la stringa in un oggetto datetime
-                exp_date_obj = datetime.strptime(json["expiry_date"], "%Y-%m-%d %H:%M:%S")
-
-                # Converti l'oggetto datetime nel formato desiderato
-                exp_date_value = exp_date_obj.strftime("%d-%m-%Y")
+                # (ISO 8601, es. "2034-12-02T00:00:00Z", oppure il formato legacy "2034-12-02 00:00:00")
+                exp_date_value = None
+                exp_date_str = json.get("expiry_date")
+                if exp_date_str:
+                    exp_date_str = exp_date_str.strip().replace("Z", "+00:00")
+                    try:
+                        exp_date_obj = datetime.fromisoformat(exp_date_str)
+                    except ValueError:
+                        try:
+                            exp_date_obj = datetime.strptime(exp_date_str, "%Y-%m-%d %H:%M:%S")
+                        except ValueError:
+                            exp_date_obj = None
+                    if exp_date_obj is not None:
+                        # Converti l'oggetto datetime nel formato desiderato
+                        exp_date_value = exp_date_obj.strftime("%d-%m-%Y")
 
                 self.credit[iccid]["expiry_date"] = {
                     "value": exp_date_value,

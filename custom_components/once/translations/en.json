@@ -1,0 +1,62 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "1NCE SIM",
+        "description": "Enter the ICCID of the SIM and the credentials of your 1NCE Portal user (with Management API access).",
+        "data": {
+          "iccid": "ICCID",
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate 1NCE",
+        "description": "The credentials for SIM {iccid} are no longer valid. Enter new credentials.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to read the SIM data. Check the ICCID and your internet connection.",
+      "invalid_auth": "Invalid username or password.",
+      "unknown": "Unexpected error, check the logs."
+    },
+    "abort": {
+      "already_configured": "This SIM is already configured.",
+      "reauth_successful": "Re-authentication was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "1NCE credentials",
+        "description": "Update the credentials used for SIM {iccid}.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to read the SIM data. Check your internet connection.",
+      "invalid_auth": "Invalid username or password.",
+      "unknown": "Unexpected error, check the logs."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "volume": {
+        "name": "Volume"
+      },
+      "total_volume": {
+        "name": "Total volume"
+      },
+      "expiry_date": {
+        "name": "Expiry date"
+      }
+    }
+  }
+}

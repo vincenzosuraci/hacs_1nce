@@ -1,69 +1,125 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/docs/faq/custom_repositories/)
+[![Validate](https://github.com/vincenzosuraci/hacs_1nce/actions/workflows/validate.yaml/badge.svg)](https://github.com/vincenzosuraci/hacs_1nce/actions/workflows/validate.yaml)
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+# 1NCE for Home Assistant
 
+A Home Assistant integration that monitors [1NCE](https://1nce.com) IoT SIM cards through the official
+1NCE Management API.
 
-Monitor the 1nce sims.
-Login credentials and sims' `iccid` are required.
+For each SIM (identified by its `ICCID`) it provides:
 
-# HACS version (suggested)
-## Installation
-- add `1NCE` as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/)
-- in HACS, search for `1NCE` and install the latest release
-- in Home Assistant, add the `1NCE` integration, insert the `username`, `password` and the sim's `iccid` and follow the instructions  
-- repeat the above steps to add more sims
+| Sensor         | Description                               | Unit |
+|----------------|-------------------------------------------|------|
+| Volume         | Remaining data volume                     | MB   |
+| Total volume   | Total data volume included in the plan    | MB   |
+| Expiry date    | Expiration date of the data quota / SIM   | date |
 
-# Stand-alone version
+New entities get ids like `sensor.1nce_<iccid>_volume`; entities created by earlier versions keep their existing ids.
 
-## Introduction
-This custom component allows you to retrieve the following information related to <code>1nce</code> operator SIM cards:
+Data is polled from the cloud every **15 minutes**.
 
-- remaining MB (internet/data);
-- total MB provided by the plan;
-- SIM card expiration date.
+## Requirements
 
-It supports the case of 2 or more SIM cards (ICCID) associated with the same account (username and password).
-It does not support the case of 2 or more accounts.
+- Home Assistant **2024.8.0** or newer.
+- The `username` and `password` of a 1NCE Portal user that can access the Management API.
+- The `ICCID` of each SIM you want to monitor (you can find it in the 1NCE Portal or printed on the SIM card).
 
-## Installation
+## Installation (HACS, recommended)
 
-- Copy the `1nce_account` folder into your [custom_components folder](https://developers.home-assistant.io/docs/en/creating_component_loading.html).
-- Restart Home Assistant.
-- After restarting Home Assistant, add the following lines to the <code>configuration.yaml</code> file (and save):
+1. In HACS, add this repository as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/):
+   - URL: `https://github.com/vincenzosuraci/hacs_1nce`
+   - Category: `Integration`
+2. Search for **1NCE** in HACS and install the latest release.
+3. Restart Home Assistant.
 
-```yaml
-1nce_account:
-  sim_iccids: !secret 1nce_account_sim_iccids
-  username: !secret 1nce_account_username
-  password: !secret 1nce_account_password
-```
+### Manual installation
 
-- Go to the <code>secrets.yaml</code> file and add the following lines (and save):
-
-```yaml
-1nce_username: "inserire-qui-la-username"  
-1nce_password: "inserire-qui-la-password"
-1nce_sim_iccids: 
-  - "inserire-qui-il-iccid-della-sim-#1"
-  - "inserire-qui-il-iccid-della-sim-#2" 
-```
-
-- Restart Home Assistant.
-- The following sets of entities should appear (one set for each phone number):
-
-  - <code>1nce_account.<iccid>_volume</code> > Remaining MB
-  - <code>1nce_account.<iccid>_expiry_date</code> > SIM expiration date
-  - <code>1nce_account.<iccid>_total_volume</code> > Total MB of the plan
+Copy the `custom_components/once` folder into the `custom_components` folder of your Home Assistant
+configuration directory, then restart Home Assistant.
 
 ## Configuration
 
-- By default, data is updated every 15 minutes.
-- You can customize the data update interval by configuring the <code>scan_interval</code> parameter (in seconds):
+The integration is configured from the UI (no YAML needed):
+
+1. Go to **Settings → Devices & services → Add integration** and search for **1NCE**.
+2. Enter the SIM `iccid`, your 1NCE `username` and `password`.
+3. The integration tests the connection against the 1NCE API; if it succeeds, a device named
+   `1NCE <iccid>` is created with the three sensors listed above.
+
+To monitor more SIMs, add the integration again once per ICCID (each SIM is a separate config entry and device;
+the same ICCID cannot be added twice).
+
+- Username and password can be changed later from the integration's **Configure** button.
+- If the credentials stop working, Home Assistant shows a **re-authentication** request where you can enter new ones.
+- To monitor a different SIM, add a new integration entry instead of editing the existing one.
+
+The UI is available in English and Italian.
+
+## How it works
+
+For every update the integration:
+
+1. obtains an OAuth access token from `POST https://api.1nce.com/management-api/oauth/token`
+   (`client_credentials` grant, HTTP Basic authentication with your username and password);
+2. reads the SIM quota from `GET https://api.1nce.com/management-api/v1/sims/{iccid}/quota/data`.
+
+The access token is cached and re-requested automatically when the API rejects it.
+The expiry date is accepted both in ISO 8601 (`2034-12-02T00:00:00Z`) and in the older `2034-12-02 00:00:00` format.
+
+## Troubleshooting
+
+To get detailed logs, add the following to `configuration.yaml` and restart Home Assistant:
 
 ```yaml
-1nce_account:
-  sim_iccids: !secret 1nce_account_sim_iccids
-  username: !secret 1nce_account_username
-  password: !secret 1nce_account_password
-  scan_interval: 900
+logger:
+  default: warning
+  logs:
+    custom_components.once: debug
 ```
 
+Please report issues at <https://github.com/vincenzosuraci/hacs_1nce/issues>.
+
+---
+
+## Legacy stand-alone version (`1nce_account`)
+
+> **Deprecated.** This is the original YAML-based component, kept for existing users. New installations
+> should use the HACS integration above.
+
+It supports several SIMs (ICCIDs) under the **same** account; it does not support multiple accounts.
+
+### Installation
+
+1. Copy the `1nce_account` folder into your
+   [custom_components folder](https://developers.home-assistant.io/docs/creating_integration_file_structure/).
+2. Add the following to `configuration.yaml`:
+
+   ```yaml
+   1nce_account:
+     username: !secret 1nce_account_username
+     password: !secret 1nce_account_password
+     sim_iccids: !secret 1nce_account_sim_iccids
+     scan_interval: 900  # optional, seconds (default: 900 = 15 minutes)
+   ```
+
+3. Add the following to `secrets.yaml`:
+
+   ```yaml
+   1nce_account_username: "your-username"
+   1nce_account_password: "your-password"
+   1nce_account_sim_iccids:
+     - "iccid-of-sim-1"
+     - "iccid-of-sim-2"
+   ```
+
+4. Restart Home Assistant.
+
+For each ICCID the following entities are created:
+
+- `1nce_account.<iccid>_volume` – remaining MB
+- `1nce_account.<iccid>_total_volume` – total MB of the plan
+- `1nce_account.<iccid>_expiry_date` – expiration date (`DD-MM-YYYY`)
+
+## Disclaimer
+
+This is an unofficial integration, not affiliated with or endorsed by 1NCE GmbH.

@@ -1,0 +1,62 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SIM 1NCE",
+        "description": "Inserisci l'ICCID della SIM e le credenziali dell'utente del 1NCE Portal (con accesso alla Management API).",
+        "data": {
+          "iccid": "ICCID",
+          "username": "Nome utente",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nuova autenticazione 1NCE",
+        "description": "Le credenziali della SIM {iccid} non sono più valide. Inserisci le nuove credenziali.",
+        "data": {
+          "username": "Nome utente",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile leggere i dati della SIM. Verifica l'ICCID e la connessione a internet.",
+      "invalid_auth": "Nome utente o password non validi.",
+      "unknown": "Errore imprevisto, controlla i log."
+    },
+    "abort": {
+      "already_configured": "Questa SIM è già configurata.",
+      "reauth_successful": "Nuova autenticazione completata."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Credenziali 1NCE",
+        "description": "Aggiorna le credenziali usate per la SIM {iccid}.",
+        "data": {
+          "username": "Nome utente",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile leggere i dati della SIM. Verifica la connessione a internet.",
+      "invalid_auth": "Nome utente o password non validi.",
+      "unknown": "Errore imprevisto, controlla i log."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "volume": {
+        "name": "Volume residuo"
+      },
+      "total_volume": {
+        "name": "Volume totale"
+      },
+      "expiry_date": {
+        "name": "Data di scadenza"
+      }
+    }
+  }
+}
